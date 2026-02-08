@@ -64,6 +64,7 @@ class HealthDataAnalysis:
         }
 
     def evaluateBias(self):
+        # Use the model to predict the value for the scaled test samples and calculate the overall accuracy and classification report for the predictions
         y_pred = self.model.predict(self.X_test_scaled)
         self.overallAccuracy = self.overallAccuracyMetrics(y_pred)
 
