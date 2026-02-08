@@ -39,7 +39,7 @@ class HealthDataAnalysis:
         scaler = StandardScaler()
         # Fit the training and test data sets
         self.X_train_scaled = scaler.fit_transform(self.X_train)
-        self.X_test_scaled = scaler.transform(self.X_test)
+        self.X_test_scaled = scaler.fit_transform(self.X_test)
 
         # Train the logistic regression model and fit it on the scaled training data sets and their labels
         self.model = LogisticRegression(max_iter=1000, random_state=42)
@@ -54,6 +54,7 @@ class HealthDataAnalysis:
         }
         
     def biasMetrics(self, data1, data2):
+        # Calculate the accuracy and recall for both data sets and calculate the error rates for both data sets using the error_rates function
         return {
             "Accuracy1": accuracy_score(data1['true'], data1['pred']),
             "Recall1": recall_score(data1['true'], data1['pred']),
@@ -97,7 +98,7 @@ class HealthDataAnalysis:
         fnr = [ error_rates_data1['False Negative Rate'], error_rates_data2['False Negative Rate'] ]
         fpr = [ error_rates_data1['False Positive Rate'], error_rates_data2['False Positive Rate'] ]
         x= np.arange(len(groups))
-        width = 0.35
+        width = 0.4
         plt.bar(x - width/2, fpr, width, label='False Positive Rate')
         plt.bar(x + width/2, fnr, width, label='False Negative Rate')
         plt.ylabel("Error Rates")
