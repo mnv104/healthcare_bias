@@ -36,10 +36,10 @@ class HealthDataAnalysis:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
 
         # We need to standardize the samples by removing the mean and scaling to fit the variance.
-        scaler = StandardScaler()
+        self.scaler = StandardScaler()
         # Fit the training and test data sets
-        self.X_train_scaled = scaler.fit_transform(self.X_train)
-        self.X_test_scaled = scaler.fit_transform(self.X_test)
+        self.X_train_scaled = self.scaler.fit_transform(self.X_train)
+        self.X_test_scaled = self.scaler.transform(self.X_test)
 
         # Train the logistic regression model and fit it on the scaled training data sets and their labels
         self.model = LogisticRegression(max_iter=1000, random_state=42)
@@ -56,12 +56,12 @@ class HealthDataAnalysis:
     def biasMetrics(self, data1, data2):
         # Calculate the accuracy and recall for both data sets and calculate the error rates for both data sets using the error_rates function
         return {
-            "Accuracy1": accuracy_score(data1['true'], data1['pred']),
-            "Recall1": recall_score(data1['true'], data1['pred']),
-            "Accuracy2": accuracy_score(data2['true'], data2['pred']),
-            "Recall2": recall_score(data2['true'], data2['pred']),
-            "Error Rates1": self.error_rates(data1),
-            "Error Rates2": self.error_rates(data2),
+            "Group 1 Accuracy": accuracy_score(data1['true'], data1['pred']),
+            "Group 1 Recall": recall_score(data1['true'], data1['pred']),
+            "Group 2 Accuracy": accuracy_score(data2['true'], data2['pred']),
+            "Group 2 Recall": recall_score(data2['true'], data2['pred']),
+            "Group 1 Error Rates": self.error_rates(data1),
+            "Group 2 Error Rates": self.error_rates(data2),
         }
 
     def evaluateBias(self):
@@ -117,14 +117,14 @@ class HealthDataAnalysis:
         print(self.overallAccuracy["Classification Report"])
 
         print("\nGender Bias Metrics:")
-        print(f"Male: Accuracy Metric: {self.genderMetrics['Accuracy1']:.2f}, Recall Metric: {self.genderMetrics['Recall1']:.2f}, False positive: {self.genderMetrics['Error Rates1']['False Positive Rate']:.2f}, False negative: {self.genderMetrics['Error Rates1']['False Negative Rate']:.2f}")
-        print(f"Female: Accuracy Metric: {self.genderMetrics['Accuracy2']:.2f}, Recall Metric: {self.genderMetrics['Recall2']:.2f}, False positive: {self.genderMetrics['Error Rates2']['False Positive Rate']:.2f}, False negative: {self.genderMetrics['Error Rates2']['False Negative Rate']:.2f}")
-        self.plotErrorRates("Gender", "Male", "Female", self.genderMetrics['Error Rates1'], self.genderMetrics['Error Rates2'])
+        print(f"Male: Accuracy Metric: {self.genderMetrics['Group 1 Accuracy']:.2f}, Recall Metric: {self.genderMetrics['Group 1 Recall']:.2f}, False positive: {self.genderMetrics['Group 1 Error Rates']['False Positive Rate']:.2f}, False negative: {self.genderMetrics['Group 1 Error Rates']['False Negative Rate']:.2f}")
+        print(f"Female: Accuracy Metric: {self.genderMetrics['Group 2 Accuracy']:.2f}, Recall Metric: {self.genderMetrics['Group 2 Recall']:.2f}, False positive: {self.genderMetrics['Group 2 Error Rates']['False Positive Rate']:.2f}, False negative: {self.genderMetrics['Group 2 Error Rates']['False Negative Rate']:.2f}")
+        self.plotErrorRates("Gender", "Male", "Female", self.genderMetrics['Group 1 Error Rates'], self.genderMetrics['Group 2 Error Rates'])
 
         print(f"\nAge Bias Metrics: (Young vs Old), median age is {self.df['age'].median()}")
-        print(f"Young: Accuracy Metric: {self.ageMetrics['Accuracy1']:.2f}, Recall Metric: {self.ageMetrics['Recall1']:.2f}, False positive: {self.ageMetrics['Error Rates1']['False Positive Rate']:.2f}, False negative: {self.ageMetrics['Error Rates1']['False Negative Rate']:.2f}")
-        print(f"Old: Accuracy Metric: {self.ageMetrics['Accuracy2']:.2f}, Recall Metric: {self.ageMetrics['Recall2']:.2f}, False positive: {self.ageMetrics['Error Rates2']['False Positive Rate']:.2f}, False negative: {self.ageMetrics['Error Rates2']['False Negative Rate']:.2f}")
-        self.plotErrorRates("Age", "Young", "Old", self.ageMetrics['Error Rates1'], self.ageMetrics['Error Rates2'])
+        print(f"Young: Accuracy Metric: {self.ageMetrics['Group 1 Accuracy']:.2f}, Recall Metric: {self.ageMetrics['Group 1 Recall']:.2f}, False positive: {self.ageMetrics['Group 1 Error Rates']['False Positive Rate']:.2f}, False negative: {self.ageMetrics['Group 1 Error Rates']['False Negative Rate']:.2f}")
+        print(f"Old: Accuracy Metric: {self.ageMetrics['Group 2 Accuracy']:.2f}, Recall Metric: {self.ageMetrics['Group 2 Recall']:.2f}, False positive: {self.ageMetrics['Group 2 Error Rates']['False Positive Rate']:.2f}, False negative: {self.ageMetrics['Group 2 Error Rates']['False Negative Rate']:.2f}")
+        self.plotErrorRates("Age", "Young", "Old", self.ageMetrics['Group 1 Error Rates'], self.ageMetrics['Group 2 Error Rates'])
 
 
 
